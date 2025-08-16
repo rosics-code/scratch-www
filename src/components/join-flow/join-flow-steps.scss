@@ -207,7 +207,7 @@
 }
 
 .welcome-step-image {
-    background-color: $ui-yellow;
+    background-color: $ui-red-dark;
 }
 
 .gender-radio-row {
@@ -223,12 +223,12 @@
 }
 
 .gender-radio-row:hover {
-    background-color: $ui-blue-10percent;
+    background-color: $ui-purple-10percent;
 }
 
 .gender-radio-row-selected, .gender-radio-row-selected:hover {
     transition: all .125s ease;
-    background-color: $ui-blue-25percent;
+    background-color: $ui-purple-25percent;
 }
 
 .join-flow-next-button-arrow {
