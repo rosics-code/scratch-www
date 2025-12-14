@@ -39,9 +39,11 @@ class Explore extends React.Component {
         this.state.offset = 0;
         this.state.showRemoveButton = false;
     }
+
     componentDidMount () {
         this.handleGetExploreMore();
     }
+
     getExploreState () {
         const categoryOptions = {
             all: '*',
@@ -52,7 +54,8 @@ class Explore extends React.Component {
             stories: 'stories',
             tutorials: 'tutorial'
         };
-        const typeOptions = ['projects', 'studios'];
+
+        const typeOptions = ['projects', 'studios', 'users'];
         const modeOptions = ['trending', 'popular', ''];
 
         let pathname = window.location.pathname.toLowerCase();
@@ -64,9 +67,12 @@ class Explore extends React.Component {
         const type = options[2];
         const currentCategory = options[3];
         const currentMode = options.length > 4 ? options[4] : '';
-        if (Object.keys(categoryOptions).indexOf(currentCategory) === -1 ||
-        typeOptions.indexOf(type) === -1 ||
-        modeOptions.indexOf(currentMode) === -1){
+
+        if (
+            typeOptions.indexOf(type) === -1 ||
+            (type !== 'users' && Object.keys(categoryOptions).indexOf(currentCategory) === -1) ||
+            modeOptions.indexOf(currentMode) === -1
+        ) {
             window.location = `${window.location.origin}/explore/projects/all/`;
         }
 
@@ -80,10 +86,20 @@ class Explore extends React.Component {
             loadNumber: 16
         };
     }
+
     handleGetExploreMore () {
-        const qText = `&q=${this.state.acceptableTabs[this.state.category]}` || '*';
-        const mode = `&mode=${(this.state.mode ? this.state.mode : 'trending')}`;
         const locale = getLocale();
+
+        const qText =
+            this.state.itemType === 'users'
+                ? ''
+                : `&q=${this.state.acceptableTabs[this.state.category]}`;
+
+        const mode =
+            this.state.itemType === 'users'
+                ? ''
+                : `&mode=${this.state.mode || 'trending'}`;
+
         const queryString =
             `limit=${this.state.loadNumber}&offset=${this.state.offset}&language=${locale}${mode}${qText}`;
 
@@ -93,9 +109,10 @@ class Explore extends React.Component {
             if (!err) {
                 const loadedSoFar = this.state.loaded;
                 Array.prototype.push.apply(loadedSoFar, body);
-                this.setState({loaded: loadedSoFar});
-                const currentOffset = this.state.offset + this.state.loadNumber;
-                this.setState({offset: currentOffset});
+                this.setState({
+                    loaded: loadedSoFar,
+                    offset: this.state.offset + this.state.loadNumber
+                });
             }
         });
     }
@@ -112,13 +129,12 @@ class Explore extends React.Component {
     }
 
     handleRemove (item) {
-        // TODO: don't slice the itemType (this was a hacky way to turn 'projects' --> 'project')
         api({
             uri: `/admin/search/${this.state.itemType.slice(0, -1)}/${item.id}`,
             method: 'DELETE'
         }, err => {
             if (err) {
-                alert('Error removing project.'); // eslint-disable-line no-alert
+                alert('Error removing item.');
                 console.error(err);
             } else {
                 const updated = this.state.loaded.filter(p => p.id !== item.id);
@@ -131,6 +147,7 @@ class Explore extends React.Component {
         const classes = classNames({
             active: (this.state.category === type)
         });
+
         return (
             <a href={`/explore/${this.state.itemType}/${type}/${this.state.mode}`}>
                 <li className={classes}>
@@ -151,30 +168,23 @@ class Explore extends React.Component {
                             </h1>
                         </div>
                     </TitleBanner>
+
                     <Tabs
+                        activeTabName={this.state.itemType}
                         items={[
                             {
                                 name: 'projects',
                                 onTrigger: () => {
-                                    window.location = `${window.location.origin}/explore/projects/` +
-                                        `${this.state.category}/${this.state.mode}`;
+                                    window.location =
+                                        `${window.location.origin}/explore/projects/${this.state.category}/${this.state.mode}`;
                                 },
                                 getContent: isActive => (
                                     <div>
-                                        {isActive ? (
-                                            <img
-                                                className="tab-icon projects"
-                                                src="/svgs/tabs/projects-active.svg"
-                                                alt=""
-                                            />
-                                        ) : (
-                                            <img
-                                                className="tab-icon projects"
-                                                src="/svgs/tabs/projects-inactive.svg"
-                                                alt=""
-                                            />
-                                        )
-                                        }
+                                        <img
+                                            className="tab-icon projects"
+                                            src={`/svgs/tabs/projects-${isActive ? 'active' : 'inactive'}.svg`}
+                                            alt=""
+                                        />
                                         <FormattedMessage id="general.projects" />
                                     </div>
                                 )
@@ -182,61 +192,75 @@ class Explore extends React.Component {
                             {
                                 name: 'studios',
                                 onTrigger: () => {
-                                    window.location = `${window.location.origin}/explore/studios/` +
-                                        `${this.state.category}/${this.state.mode}`;
+                                    window.location =
+                                        `${window.location.origin}/explore/studios/${this.state.category}/${this.state.mode}`;
                                 },
                                 getContent: isActive => (
                                     <div>
-                                        {isActive ? (
-                                            <img
-                                                className="tab-icon studios"
-                                                src="/svgs/tabs/studios-active.svg"
-                                                alt=""
-                                            />
-                                        ) : (
-                                            <img
-                                                className="tab-icon studios"
-                                                src="/svgs/tabs/studios-inactive.svg"
-                                                alt=""
-                                            />
-                                        )
-                                        }
+                                        <img
+                                            className="tab-icon studios"
+                                            src={`/svgs/tabs/studios-${isActive ? 'active' : 'inactive'}.svg`}
+                                            alt=""
+                                        />
                                         <FormattedMessage id="general.studios" />
+                                    </div>
+                                )
+                            },
+                            {
+                                name: 'users',
+                                onTrigger: () => {
+                                    window.location =
+                                        `${window.location.origin}/explore/users/all/`;
+                                },
+                                getContent: () => (
+                                    <div>
+                                        <img
+                                            className="tab-icon users"
+                                            src="/svgs/tabs/users.svg"
+                                            alt=""
+                                        />
+                                        <FormattedMessage id="general.users" />
                                     </div>
                                 )
                             }
                         ]}
-                        activeTabName={this.state.itemType}
                     />
+
                     <div className="sort-controls">
-                        <SubNavigation className="categories">
-                            {this.getBubble('all')}
-                            {this.getBubble('animations')}
-                            {this.getBubble('art')}
-                            {this.getBubble('games')}
-                            {this.getBubble('music')}
-                            {this.getBubble('stories')}
-                            {this.getBubble('tutorials')}
-                        </SubNavigation>
-                        <Form className="sort-mode">
-                            <Select
-                                aria-label={this.props.intl.formatMessage({id: 'general.status'})}
-                                name="sort"
-                                options={[
-                                    {
-                                        value: 'trending',
-                                        label: this.props.intl.formatMessage({id: 'explore.trending'})
-                                    },
-                                    {
-                                        value: 'popular',
-                                        label: this.props.intl.formatMessage({id: 'explore.popular'})
-                                    }
-                                ]}
-                                value={this.state.mode}
-                                onChange={this.handleChangeSortMode}
-                            />
-                        </Form>
+                        {this.state.itemType !== 'users' && (
+                            <SubNavigation className="categories">
+                                {this.getBubble('all')}
+                                {this.getBubble('animations')}
+                                {this.getBubble('art')}
+                                {this.getBubble('games')}
+                                {this.getBubble('music')}
+                                {this.getBubble('stories')}
+                                {this.getBubble('tutorials')}
+                            </SubNavigation>
+                        )}
+
+                        {this.state.itemType !== 'users' && (
+                            <Form className="sort-mode">
+                                <Select
+                                    aria-label={this.props.intl.formatMessage({id: 'general.status'})}
+                                    name="sort"
+                                    options={[
+                                        {
+                                            value: 'trending',
+                                            label: this.props.intl.formatMessage({id: 'explore.trending'})
+                                        },
+                                        {
+                                            value: 'popular',
+                                            label: this.props.intl.formatMessage({id: 'explore.popular'})
+                                        }
+                                    ]}
+                                    value={this.state.mode}
+                                    onChange={this.handleChangeSortMode}
+                                />
+                            </Form>
+                        )}
                     </div>
+
                     {this.props.session?.session?.permissions?.admin && (
                         <div className="sort-controls">
                             <label>
@@ -249,10 +273,8 @@ class Explore extends React.Component {
                             </label>
                         </div>
                     )}
-                    <div
-                        id="projectBox"
-                        key="projectBox"
-                    >
+
+                    <div id="projectBox">
                         <Grid
                             cards
                             showAvatar
@@ -264,15 +286,12 @@ class Explore extends React.Component {
                             showRemoveButton={this.state.showRemoveButton}
                             onRemove={this.handleRemove}
                         />
-                        <Button
-                            onClick={this.handleGetExploreMore}
-                        >
+                        <Button onClick={this.handleGetExploreMore}>
                             <FormattedMessage id="general.loadMore" />
                         </Button>
                     </div>
                 </div>
             </div>
-
         );
     }
 }
