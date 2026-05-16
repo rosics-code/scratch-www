@@ -14,6 +14,7 @@ const AdminPanel = require('../../components/adminpanel/adminpanel.jsx');
 const Box = require('../../components/box/box.jsx');
 const Button = require('../../components/forms/button.jsx');
 const Carousel = require('../../components/carousel/carousel.jsx');
+const NativeCarousel = require('./nativeCarousel.jsx');
 const EmailConfirmationBanner = require('../../components/dropdown-banner/email-confirmation/banner.jsx');
 const Intro = require('../../components/intro/intro.jsx');
 const LegacyCarousel = require('../../components/carousel/legacy-carousel.jsx');
@@ -216,7 +217,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     id: 'splash.featuredProjects'
                 })}
             >
-                <LegacyCarousel items={this.props.featuredGlobal.community_featured_projects} />
+                <NativeCarousel items={this.props.featuredGlobal.community_featured_projects} />
             </Box>,
             <Box
                 key="community_featured_studios"
@@ -224,7 +225,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     id: 'splash.featuredStudios'
                 })}
             >
-                <LegacyCarousel
+                <NativeCarousel
                     items={this.props.featuredGlobal.community_featured_studios}
                     settings={{
                         slidesToShow: 4,
@@ -251,7 +252,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                         {curatorId: curatorName}
                     )}
                 >
-                    <LegacyCarousel items={this.props.featuredGlobal.curator_top_projects} />
+                    <NativeCarousel items={this.props.featuredGlobal.curator_top_projects} />
                 </Box>
             );
         }
@@ -269,7 +270,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                         `${this.props.intl.formatMessage({id: 'splash.scratchDesignStudioTitle'})} - ${galleryTitle}`
                     }
                 >
-                    <LegacyCarousel items={this.props.featuredGlobal.scratch_design_studio} />
+                    <NativeCarousel items={this.props.featuredGlobal.scratch_design_studio} />
                 </Box>
             );
         }
@@ -280,7 +281,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     key="custom_projects_by_following"
                     title={this.props.intl.formatMessage({id: 'splash.projectsByScratchersFollowing'})}
                 >
-                    <Carousel items={this.props.sharedByFollowing} />
+                    <NativeCarousel items={this.props.sharedByFollowing} />
                 </Box>
             );
         }
@@ -291,7 +292,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     key="custom_projects_loved_by_following"
                     title={this.props.intl.formatMessage({id: 'splash.projectsLovedByScratchersFollowing'})}
                 >
-                    <Carousel items={this.props.lovedByFollowing} />
+                    <NativeCarousel items={this.props.lovedByFollowing} />
                 </Box>
             );
         }
@@ -302,7 +303,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     key="custom_projects_in_studios_following"
                     title={this.props.intl.formatMessage({id: 'splash.projectsInStudiosFollowing'})}
                 >
-                    <Carousel items={this.props.inStudiosFollowing} />
+                    <NativeCarousel items={this.props.inStudiosFollowing} />
                 </Box>
             );
         }
@@ -313,7 +314,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     key="community_most_remixed_projects"
                     title={this.props.intl.formatMessage({id: 'splash.communityRemixing'})}
                 >
-                    <LegacyCarousel
+                    <NativeCarousel
                         showRemixes
                         items={shuffle(this.props.featuredGlobal.community_most_remixed_projects)}
                     />
@@ -322,7 +323,7 @@ class SplashPresentation extends React.Component { // eslint-disable-line react/
                     key="community_most_loved_projects"
                     title={this.props.intl.formatMessage({id: 'splash.communityLoving'})}
                 >
-                    <LegacyCarousel
+                    <NativeCarousel
                         showLoves
                         items={shuffle(this.props.featuredGlobal.community_most_loved_projects)}
                     />
