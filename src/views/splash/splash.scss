@@ -74,7 +74,6 @@
         li {
             margin: 0;
             list-style: none;
-
         }
     }
 }
@@ -188,4 +187,131 @@
             width: frameless.$cols8;
         }
     }
+}
+
+.scratch-native-carousel-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.scratch-native-carousel {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 8px 4px;
+    scrollbar-width: none; 
+
+    &::-webkit-scrollbar {
+        display: none; 
+    }
+
+    scroll-marker-group: after;
+}
+
+.scratch-native-slide {
+    flex: 0 0 calc(25% - 10.5px); 
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+}
+
+@media #{frameless.$medium} {
+    .scratch-native-slide {
+        flex: 0 0 calc(50% - 7px); 
+    }
+}
+
+@media #{frameless.$small} {
+    .scratch-native-slide {
+        flex: 0 0 100%; 
+    }
+}
+
+.scratch-project-card {
+    background: colors.$ui-white;
+    border: 1px solid colors.$ui-light-gray;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.scratch-project-thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    display: block;
+    object-fit: cover;
+}
+
+.scratch-project-info {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.scratch-project-title {
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.scratch-project-author {
+    color: colors.$ui-dark-gray;
+    text-decoration: none;
+    font-size: 0.75rem;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.scratch-native-carousel::scroll-button(left) {
+    content: "‹";
+    font-size: 2.5rem;
+    color: colors.$ui-grey;
+    cursor: pointer;
+    align-self: center;
+    padding: 0 8px;
+}
+
+.scratch-native-carousel::scroll-button(right) {
+    content: "›";
+    font-size: 2.5rem;
+    color: colors.$ui-grey;
+    cursor: pointer;
+    align-self: center;
+    padding: 0 8px;
+}
+
+.scratch-native-carousel::scroll-marker-group {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.scratch-native-slide::scroll-marker {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: colors.$ui-light-gray;
+    display: inline-block;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.scratch-native-slide::scroll-marker:target-current {
+    background: colors.$ui-light-grey;
 }
